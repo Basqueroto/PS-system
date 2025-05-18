@@ -21,14 +21,27 @@ export async function authenticateStaff(username: string, password: string): Pro
   await new Promise((resolve) => setTimeout(resolve, 800))
 
   try {
+    console.log(`Tentando autenticar: ${username}`)
     const staff = dbManager.verifyStaffCredentials(username, password)
 
     if (staff) {
+      console.log(`Autenticação bem-sucedida para: ${username}`)
       return {
         success: true,
         staff,
       }
     } else {
+      console.log(`Autenticação falhou para: ${username}`)
+      // Verificar se o usuário existe mas a senha está errada
+      const staffExists = dbManager.getStaffByUsername(username)
+      if (staffExists) {
+        console.log(`Usuário ${username} existe, mas a senha está incorreta`)
+        return {
+          success: false,
+          message: "Senha incorreta. Por favor, verifique sua senha.",
+        }
+      }
+
       return {
         success: false,
         message: "Credenciais inválidas. Por favor, verifique seu usuário e senha.",

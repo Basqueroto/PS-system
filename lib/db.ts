@@ -160,7 +160,7 @@ const initialDatabase: Database = {
   archivedPatients: [],
 }
 
-// Função para inicializar o banco de dados
+// Modificar a função initializeDatabase para garantir que as credenciais de enfermeiro sejam sempre adicionadas
 function initializeDatabase(): Database {
   try {
     // Verificar se estamos no cliente antes de acessar localStorage
@@ -179,10 +179,28 @@ function initializeDatabase(): Database {
         }
         return value
       })
+
+      // Garantir que as credenciais de enfermeiro existam
+      const hasEnfermeiro = parsedDb.staff.some((s: Staff) => s.username === "enfermeiro")
+      if (!hasEnfermeiro) {
+        parsedDb.staff.push({
+          id: "STF001",
+          username: "enfermeiro",
+          password: "123456",
+          name: "Ana Enfermeira",
+          role: "enfermeiro",
+        })
+        // Salvar o banco de dados atualizado
+        localStorage.setItem("hospital_db", JSON.stringify(parsedDb))
+        console.log("Credenciais de enfermeiro adicionadas ao banco de dados")
+      }
+
       return parsedDb
     }
+
     // Se não existir, inicializar com os dados padrão
     localStorage.setItem("hospital_db", JSON.stringify(initialDatabase))
+    console.log("Banco de dados inicializado com dados padrão")
     return initialDatabase
   } catch (error) {
     console.error("Erro ao inicializar banco de dados:", error)

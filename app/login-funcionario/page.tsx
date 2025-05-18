@@ -50,6 +50,10 @@ export default function LoginFuncionarioPage() {
     }
   }
 
+  const isClient = () => typeof window !== "undefined"
+
+  // Adicionar um botão para limpar o banco de dados e reiniciar
+
   // Não renderizar o conteúdo completo até que o componente esteja montado no cliente
   if (!mounted) {
     return (
